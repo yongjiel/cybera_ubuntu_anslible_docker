@@ -1,0 +1,9 @@
+---
+# This playbook 
+- name: Intall vim and copy sudoers file into all hosts
+  hosts: centos_servers
+  remote_user: centos
+  become: yes
+  roles:
+    -  sudoer
+'''

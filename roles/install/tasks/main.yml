@@ -1,0 +1,67 @@
+---
+# for installation of docker-cd=e
+- name: uninstall docker first
+  apt: 
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker 
+    - docker-common
+    - docker-selinux
+    - docker-engine
+    - docker.io
+- name: install dependancies
+  apt: 
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+- name: Remove useless packages from the cache
+  apt:
+    autoclean: yes
+- name: Add Docker’s official GPG key
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+#  apt_key:
+#    id: 0EBFCD88
+#    url: https://download.docker.com/linux/ubuntu/gpg
+#    state: present
+- name: verify  GPG fingerprint
+  shell: apt-key fingerprint 0EBFCD88
+  register: gpg
+- debug: 
+    var: gpg.stdout_lines
+- name:  set up the stable repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu artful stable"
+    state: present
+    update_cache: yes
+- name: install docker-ce
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+- name: list docker versions
+  shell:  apt-cache madison docker-ce
+  register: list
+- debug: 
+    var: list.stdout_lines
+- name: install specific version of docker-ce
+  apt: 
+    name: docker-ce=18.03.1~ce-0~ubuntu
+    state: present
+- name: show docker version
+  shell: docker info
+  register: inf
+- debug: 
+    var: inf.stdout_lines
+- name: Add current user to group docker
+  shell: usermod -a -G docker ubuntu
+  register: user_to_group_docker
+- debug: 
+    var: user_to_group_docker.stdout_lines
+- name: activate new group ubuntu
+  shell: newgrp docker
+...

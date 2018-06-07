@@ -1,0 +1,13 @@
+---
+# install vim in all hosts and copy sudoers file into all hosts
+- name: install vim in all hosts 
+  yum: 
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - vim
+- name: copy /etc/sudoers to all hosts
+  copy:
+    src: /etc/sudoers
+    dest: /etc/sudoers
+... 

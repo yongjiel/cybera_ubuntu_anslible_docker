@@ -1,0 +1,7 @@
+shell:  yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-
+ce.repo
+
+
+sudo apt-get update
+sudo apt install yum
+

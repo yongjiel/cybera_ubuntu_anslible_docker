@@ -1,0 +1,7 @@
+# This playbook deploys the whole application stack in this site.
+- name: Install and test docker
+  hosts: ubuntu_servers 
+  remote_user: ubuntu
+  become: yes
+  roles:
+    -  { role: install, http_port: 8080 }
